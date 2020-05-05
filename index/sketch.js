@@ -1,242 +1,242 @@
-let classifier; 
+let classifier;
 
-let video; 
+let video;
 
-let label = 'waiting'; 
+let label = 'waiting';
 
-let me = 0; 
+let me = 0;
 
-let they = 0; 
+let they = 0;
 
-let counter = 0; 
+let counter = 0;
 
-let hand = ''; 
+let hand = '';
 
-let comp = ''; 
+let comp = '';
 
-const moves = ['rock', 'paper', 'scissors']; 
+const moves = ['rock', 'paper', 'scissor'];
 
-let judgement = ''; 
+let judgement = '';
 
-const emoji = { 
+const emoji = {
 
-  rock: '✊', 
+  rock: '✊',
 
-  paper: '🤚', 
+  paper: '🤚',
 
   scissor: '✌️',
   scissors: '✌️',
 
-  my: '🖥', 
+  my: '🖥',
 
-  theyy: '🤸‍', 
+  theyy: '🤸‍',
 
-}; 
+};
 
-function preload() { 
+function preload() {
 
-  classifier = ml5.imageClassifier('https://storage.googleapis.com/tm-model/cKoiA0zr2/model.json'); 
+  classifier = ml5.imageClassifier('https://storage.googleapis.com/tm-model/cKoiA0zr2/model.json');
 
-} 
+}
 
-  
 
-function setup() { 
 
-  createCanvas(windowWidth, windowHeight); 
+function setup() {
 
-  
+  createCanvas(windowWidth, windowHeight);
 
-  // Create the video 
 
-  video = createCapture(VIDEO); 
 
-  video.size(1280, 720); 
+  // Create the video
 
-  video.hide(); 
+  video = createCapture(VIDEO);
 
-  
+  video.size(1280, 720);
 
-  // Start classifying 
+  video.hide();
 
-  classifyVideo(); 
 
-  
 
-  textAlign(CENTER, CENTER); 
+  // Start classifying
 
-} 
+  classifyVideo();
 
-  
 
-function draw() { 
 
-  background(0); 
+  textAlign(CENTER, CENTER);
 
-  imageMode(CENTER); 
+}
 
-  image(ml5.flipImage(video), width / 2, height / 2, height * video.width / video.height, height); 
 
-  fill(0, 0, 0, 190); 
 
-  rect(0, 0, width, height); 
+function draw() {
 
-  
+  background(0);
 
-  if (hand == label) { 
+  imageMode(CENTER);
 
-    counter += 1; 
+  image(ml5.flipImage(video), width / 2, height / 2, height * video.width / video.height, height);
 
-  } else if (comp == '') { 
+  fill(0, 0, 0, 190);
 
-    counter = 0; 
+  rect(0, 0, width, height);
 
-    hand = label; 
 
-  } 
 
-  
+  if (hand == label) {
 
-  fill(255, 0, 255); 
+    counter += 1;
 
-  if (hand != 'neutral' && hand != '') rect(0, 0, map(counter, 0, 10, 0, width), 12); 
+  } else if (comp == '') {
 
-  fill(255); 
+    counter = 0;
 
-  
+    hand = label;
 
-  if (comp != '') { 
+  }
 
-    textSize(48); 
 
-    text(` ${emoji.my}: ${emoji[comp]}`, width / 4, height / 8); 
 
-    noLoop(); 
+  fill(255, 0, 255);
 
-    setTimeout(() => { 
+  if (hand != 'neutral' && hand != '') rect(0, 0, map(counter, 0, 10, 0, width), 12);
 
-      comp = ''; 
+  fill(255);
 
-      counter = 0; 
 
-      judgement = ''; 
 
-      loop(); 
+  if (comp != '') {
 
-    }, 3000); 
+    textSize(48);
 
-  } else if (counter >= 10 && hand != 'neutral' && hand != '' && comp == '') { 
+    text(` ${emoji.my}: ${emoji[comp]}`, width / 4, height / 8);
 
-    comp = random(moves); 
+    noLoop();
 
-  
+    setTimeout(() => {
 
-    if ((hand == 'rock' && comp == 'paper') || 
+      comp = '';
 
-      (hand == 'paper' && comp == 'scissor') || 
+      counter = 0;
 
-      (hand == 'scissors' && comp == 'rock')) { // win 
+      judgement = '';
 
-      judgement = `${emoji.my}+1`; 
+      loop();
 
-      me += 1; 
+    }, 3000);
 
-    } else if (comp == hand) { // tie 
+  } else if (counter >= 10 && hand != 'neutral' && hand != '' && comp == '') {
 
-      judgement = '±0'; 
+    comp = random(moves);
 
-    } else if ((comp == 'rock' && hand == 'paper') || 
 
-      (comp == 'paper' && hand == 'scissor') || 
 
-      (comp == 'scissors' && hand == 'rock')) { // win 
+    if ((hand == 'rock' && comp == 'paper') ||
 
-      judgement = `${emoji.theyy}+1`; 
+      (hand == 'paper' && comp == 'scissor') ||
+
+      (hand == 'scissor' && comp == 'rock')) { // win
+
+      judgement = `${emoji.my}+1`;
+
+      me += 1;
+
+    } else if (comp == hand) { // tie
+
+      judgement = '±0';
+
+    } else if ((comp == 'rock' && hand == 'paper') ||
+
+      (comp == 'paper' && hand == 'scissor') ||
+
+      (comp == 'scissor' && hand == 'rock')) { // win 
+
+      judgement = `${emoji.theyy}+1`;
 
       they += 1;
 
-    } 
+    }
     else {textSize(32);
           text('Retry', 0, 0);}
 
-  } else if (comp == '') { 
+  } else if (comp == '') {
 
-    classifyVideo(); 
+    classifyVideo();
 
-  } 
+  }
 
-  
 
-  if (['rock', 'paper', 'scissor'].includes(hand)) { 
 
-    textSize(256); 
+  if (['rock', 'paper', 'scissor'].includes(hand)) {
 
-    text(emoji[hand], width / 2, height / 2); 
+    textSize(256);
 
-  } else if (hand == 'neutral') { 
+    text(emoji[hand], width / 2, height / 2);
 
-    textSize(64); 
+  } else if (hand == 'neutral') {
 
-    text('I’m Ready', width / 2, height / 2); 
+    textSize(64);
 
-  } else { 
+    text('I’m Ready', width / 2, height / 2);
 
-    textSize(64); 
+  } else {
 
-    text('Hello!', width / 2, height / 2); 
+    textSize(64);
 
-    noLoop(); 
+    text('Hello!', width / 2, height / 2);
 
-  } 
+    noLoop();
 
-  
+  }
 
-  textSize(32); 
 
-  text(`Scoreboard : ${emoji.my} ${me} : ${they} ${emoji.theyy}`, width / 2, height - 16); 
 
-  if (judgement != '') { 
+  textSize(32);
 
-    textSize(24); 
+  text(`Scoreboard : ${emoji.my} ${me} : ${they} ${emoji.theyy}`, width / 2, height - 16);
 
-  
+  if (judgement != '') {
 
-    if (judgement.includes(emoji.theyy)) fill(0, 255, 0); 
+    textSize(24);
 
-    else if (judgement.includes(emoji.my)) fill(255, 0, 0); 
 
-    else fill(255); 
 
-    text(judgement, width / 2, height - 60); 
+    if (judgement.includes(emoji.theyy)) fill(0, 255, 0);
 
-  } 
+    else if (judgement.includes(emoji.my)) fill(255, 0, 0);
 
-} 
+    else fill(255);
 
-  
+    text(judgement, width / 2, height - 60);
 
-function classifyVideo() { 
+  }
 
-  classifier.classify(ml5.flipImage(video), gotResult); 
+}
 
-} 
 
-  
 
-function gotResult(error, results) { 
+function classifyVideo() {
 
-  if (error) { 
+  classifier.classify(ml5.flipImage(video), gotResult);
 
-    console.error(error); 
+}
 
-    return; 
 
-  } 
 
-  
+function gotResult(error, results) {
 
-  label = results[0].label.toLowerCase(); 
+  if (error) {
 
-  loop(); 
+    console.error(error);
 
-} 
+    return;
+
+  }
+
+
+
+  label = results[0].label.toLowerCase();
+
+  loop();
+
+}
